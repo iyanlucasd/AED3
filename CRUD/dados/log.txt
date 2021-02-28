@@ -1,0 +1,2 @@
+Feb 28, 2021 2:53:22 PM CRUD read
+WARNING: java.io.UTFDataFormatException: malformed input around byte 10
