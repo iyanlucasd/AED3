@@ -25,21 +25,22 @@ public class Teste {
             // Insere os três livros
             id1 = arqLivros.create(l1);
             l1.setID(id1);
-            System.out.println(l1);
+            // System.out.println(l1);
             // System.out.println(id1);
-            // id2 = arqLivros.create(l2);
-            // l2.setID(id2);
-            // id3 = arqLivros.create(l3);
-            // l3.setID(id3);
+            id2 = arqLivros.create(l2);
+            l2.setID(id2);
+            id3 = arqLivros.create(l3);
+            l3.setID(id3);
 
             // Busca por dois livros
-            // System.out.println(arqLivros.read(id3));
-            // System.out.println(arqLivros.read(id1));
+            System.out.println(arqLivros.read(id3));
+            System.out.println(arqLivros.read(id1));
 
-            // // Altera um livro para um tamanho maior e exibe o resultado
-            // l2.autor = "Richard Burton Matheson";
-            // arqLivros.update(l2);
-            // System.out.println(arqLivros.read(id2));
+            // Altera um livro para um tamanho maior e exibe o resultado
+            l2.autor = "Richard Burton Matheson";
+            arqLivros.update(l2);
+            System.out.println(arqLivros.read(id2));
+            // System.out.println(l2);
 
             // // Altera um livro para um tamanho menor e exibe o resultado
             // l1.autor = "I. Asimov";
