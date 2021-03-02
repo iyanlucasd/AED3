@@ -52,7 +52,7 @@ public class Teste {
             System.out.println(arqLivros.read(id1));
             System.out.println("-----------------------------------");
 
-            // // Excluir um livro e mostra que não existe mais
+            // Excluir um livro e mostra que não existe mais
             arqLivros.delete(id3);
             Livro l = (Livro) arqLivros.read(id3);
             if (l == null)

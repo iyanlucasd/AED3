@@ -1,12 +1,7 @@
 
-/**
- * Includes padão
- */
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.FileAlreadyExistsException;
@@ -17,40 +12,45 @@ import java.util.logging.Level;
  * Declaração e começo da classe CRUD Genérica
  * 
  * @author Iyan Lucas Duarte Marques;
- * @version 0.2
+ * @version 1.0
  */
 
 public class CRUD<T extends registro> {
-    protected int countID = 0; // contador de IDs
-    protected int countReg = 0; // contador de IDs
-    protected T bar; // variável de tipo genérico
-    protected String file_payh; // String pra caminho personalizado
-    protected Constructor foo;
-    protected T[] barfoo;
+    protected int countID = 0;                      // contador de IDs
+    protected int countReg = 0;                     // contador de IDs
+    protected T bar;                                // variável de tipo genérico
+    protected String file_path;                     // String pra caminho personalizado
+    protected Constructor foo;                      // Constructor para inicializar T fora do "construtor" 
 
-    RandomAccessFile arq;
+    RandomAccessFile arq;                           // RAF para acessar em todos os métodos
 
     /**
      * Construtor genérico
      * 
-     * @param foo       Construtor genérico de objeto passado pela main (6)
-     * @param file_name String com o caminho
+     * @param foo           Construtor genérico de objeto passado pela main (6)
+     * @param file_name     String com o caminho
      */
     CRUD(Constructor foo, String file_name) {
         try {
-            this.foo = foo;
-            this.bar = (T) foo.newInstance(); // alocando o tipo pra classe genérica e criando objeto
-            this.file_payh = file_name; // set file_path
+            this.foo = foo;                         // Alocando o construtor
+            this.bar = (T) foo.newInstance();       // alocando o tipo pra classe genérica e criando objeto
+            this.file_path = file_name;             // set file_path
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
     }
-
+    /**
+     *  Chamada para função create principal, serve pra eu definir o id passado pelo teste
+     *  Isso me permite adicionar um id personalizado dentro do Update
+     * @param foobar
+     * @return Método com o id auto gerado
+     * @throws SecurityException
+     * @throws IOException
+     */
     public int create(T foobar) throws SecurityException, IOException {
-        countID++;
+        countID++;                                 // Cria um id que ainda não foi usado
         return create(foobar, countID);
     }
 
@@ -59,31 +59,31 @@ public class CRUD<T extends registro> {
      * @throws IOException       --> LOG && RAF
      */
     public int create(T foobar, int id) throws SecurityException, IOException {
-        Log my_log = new Log("dados/log.txt"); // Criar o Log e definir o local do arquivo
-        my_log.logger.setLevel(Level.WARNING); // Só registra warning pra cima
+        Log my_log = new Log("dados/log.txt");  // Criar o Log e definir o local do arquivo
+        my_log.logger.setLevel(Level.WARNING);  // Só registra warning pra cima
         // -----------------------fim log-------------------------------
 
         /**
          * ! configurações pré gravação
          */
 
-        countReg++;
-        foobar.setID(id);
-        byte[] ba = foobar.toByteArray();
-        int tam = ba.length;
-        boolean flag = true;
+        countReg++;                             // Aumenta um tipo de registro (é diferente do CountID)
+        foobar.setID(id);                       // Aloca o ID no objeto
+        byte[] ba = foobar.toByteArray();       // Cria um byte array do objeto genérico
+        int tam = ba.length;            
+        boolean flag = true;                    // lápide pra falar que o registro está ativo
         // -----------------------fim config-------------------------------
 
         try {
             arq = new RandomAccessFile("dados/livros.db", "rw");
-            arq.seek(0);
-            arq.writeInt(countReg);
-            arq.seek(arq.length()); // ir para o EOF
-            arq.writeBoolean(flag); // Escreve a Flag
-            arq.writeInt(tam); // Escreve o tamanho do objeto
-            arq.write(ba); //escreve o objeto em si
+            arq.seek(0);                        
+            arq.writeInt(countReg);             // escreve o novo número de registros escritos no BD
+            arq.seek(arq.length());             // ir para o EOF
+            arq.writeBoolean(flag);             // Escreve a Flag
+            arq.writeInt(tam);                  // Escreve o tamanho do objeto
+            arq.write(ba);                      // Escreve o objeto em si
 
-            arq.close();
+            arq.close();                        
 
         } catch (FileNotFoundException FNFE) {
             my_log.logger.severe("Arquivo não encontrado");
@@ -99,9 +99,9 @@ public class CRUD<T extends registro> {
 
     /**
      * *Pesquisa no DB o registro com o ID correspondente
-     *  TODO pular registros com flag falsa
      * @param id recebe o ID do objeto que quer ler
      * @return retorna o objeto com o ID 
+     * ! passei as exceptions abaixo pra uma só e trato ela no LOG
      * @throws SecurityException
      * @throws IOException
      * @throws InvocationTargetException
@@ -110,39 +110,61 @@ public class CRUD<T extends registro> {
      * @throws InstantiationException
      */
     public T read(int id) throws Exception {
-        Log my_log = new Log("dados/log.txt"); // Criar o Log e definir o local do arquivo
-        my_log.logger.setLevel(Level.WARNING); // Só registra warning pra cima
+        Log my_log = new Log("dados/log.txt");  // Criar o Log e definir o local do arquivo
+        my_log.logger.setLevel(Level.WARNING);  // Só registra warning pra cima
         // -----------------------fim log-------------------------------
 
         /**
          * ! declaração para busca
          */
 
-        int key = 0;
-        int tam = 0;
-        T foobar = (T) foo.newInstance();
+        int key = 0;                            // ID do objeto
+        int tam = 0;                            // Tamanho do objeto
+        /**
+         * foobar -> objeto feito para capturar o byte array do arquivo
+         * foobarfoo -> objeto auxiliar feito para capturar do foobar o registro certo
+         */
+        T foobar = (T) foo.newInstance();       
         T foobarfoo = (T) foo.newInstance();
-        boolean sideFlag = false;
-        boolean flag = false;
-        byte[] ba = new byte[0];
+
+        boolean flag = false;                   // flag do registro
+        
+        /**
+         * ! Então kutova, eu fiz essa variável pseudo-gambiarra aqui... (sideFlag)
+         * ! Mas ela é mais pra ver se não encontrou ninguém, deixar o retorno null
+         * ! Visto que no seu teste, pede pro livro ser deletadaS 
+         */
+        boolean sideFlag = false;                      
+        
+        byte[] ba = new byte[0];               // byte array de tamanho 0 pra ser alocado dinamicamente 
         // -----------------------fim log-------------------------------
 
         try {
             arq = new RandomAccessFile("dados/livros.db", "rw");
             arq.seek(0);
             arq.readInt();
+
             for (int i = 0; i < countReg; i++) {                
-                flag = arq.readBoolean();
-                tam = arq.readInt();
-                ba = new byte[tam];
-                arq.read(ba);
-                foobar.fromByteArray(ba);
-                key = foobar.getID();
+                flag = arq.readBoolean();       // lê a lápide
+                tam = arq.readInt();            // lê o tamanho do registro
+                ba = new byte[tam];             // aloca o tamanho no vetor de bytes
+                arq.read(ba);                   // enche o vetor de bytes com o registro do objeto
+                foobar.fromByteArray(ba);       // seta as variáveis do objeto baseado no registro
+                key = foobar.getID();           // pega o ID do objeto
+
+                /**
+                 * Verifica se o id é o mesmo
+                 * se sim verifica se é um registro válido
+                 * passa o conteúdo do objeto principal para o auxiliar
+                 * seta a flag pra mostrar que achou algum registro compatível
+                 * para o for
+                 */
                 if (key == id && flag == true) {
                     sideFlag = true;
-                   foobarfoo = foobar; 
-                   i = countReg;
+                    foobarfoo = foobar; 
+                    i = countReg;
                 }
+
             }
 
             arq.close();
@@ -164,16 +186,30 @@ public class CRUD<T extends registro> {
     }
     // -----------------------fim READ-------------------------------
 
+    /**
+     * *O update é basicamente deletar o registro correspondente e criar um novo
+     * @param foobar objeto que a pessoa quer que atualiza (com as infos já atualizadas)
+     * @throws SecurityException
+     * @throws IOException
+     */
     public void update(T foobar) throws SecurityException, IOException {
 
-        delete(foobar.getID());
-        create(foobar, foobar.getID());
+        delete(foobar.getID());                 // chama a função de delete para mudar a lápide dos registros com o mesmo id
+        create(foobar, foobar.getID());         // Cria um novo registro no final com o id personalizado
 
     }
 
+    // -----------------------fim update-------------------------------
+
+    /**
+     * 
+     * @param id
+     * @throws SecurityException
+     * @throws IOException
+     */
     public void delete(int id) throws SecurityException, IOException {
-        Log my_log = new Log("dados/log.txt"); // Criar o Log e definir o local do arquivo
-        my_log.logger.setLevel(Level.WARNING); // Só registra warning pra cima
+        Log my_log = new Log("dados/log.txt");  // Criar o Log e definir o local do arquivo
+        my_log.logger.setLevel(Level.WARNING);  // Só registra warning pra cima
         // -----------------------fim log-------------------------------
 
         /**
@@ -186,13 +222,15 @@ public class CRUD<T extends registro> {
         boolean flag = false;
         byte[] ba = new byte [0];
         // -----------------------fim log-------------------------------
-        // System.out.println(foobar);
+
+        /**
+         * ! mesmo que a READ
+         */
         try {
             arq = new RandomAccessFile("dados/livros.db", "rw");
             arq.seek(0);
             arq.readInt();
 
-            // * Lê enquanto não achar o ID
             for (int i = 0; i < countReg; i++) {                
                 FileAt = arq.getFilePointer();
                 flag = arq.readBoolean();
