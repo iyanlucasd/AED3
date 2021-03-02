@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.FileAlreadyExistsException;
@@ -21,8 +22,11 @@ import java.util.logging.Level;
 
 public class CRUD<T extends registro> {
     protected int countID = 0; // contador de IDs
+    protected int countReg = 0; // contador de IDs
     protected T bar; // variável de tipo genérico
     protected String file_payh; // String pra caminho personalizado
+    protected Constructor foo;
+    protected T[] barfoo;
 
     RandomAccessFile arq;
 
@@ -34,6 +38,7 @@ public class CRUD<T extends registro> {
      */
     CRUD(Constructor foo, String file_name) {
         try {
+            this.foo = foo;
             this.bar = (T) foo.newInstance(); // alocando o tipo pra classe genérica e criando objeto
             this.file_payh = file_name; // set file_path
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
@@ -44,16 +49,16 @@ public class CRUD<T extends registro> {
 
     }
 
-    /**
-     * * Cria o registro no .db e insere a lápide e o indicador de tamanho 
-     * * Gera o ID (incrementa a variável global do ID)
-     * 
-     * @param foobar objeto genérico passado na main: <Livro>
-     * @return retorna o ID do livro
+    public int create(T foobar) throws SecurityException, IOException {
+        countID++;
+        return create(foobar, countID);
+    }
+
+    /**´ livro
      * @throws SecurityException --> LOG
      * @throws IOException       --> LOG && RAF
      */
-    public int create(T foobar) throws SecurityException, IOException {
+    public int create(T foobar, int id) throws SecurityException, IOException {
         Log my_log = new Log("dados/log.txt"); // Criar o Log e definir o local do arquivo
         my_log.logger.setLevel(Level.WARNING); // Só registra warning pra cima
         // -----------------------fim log-------------------------------
@@ -62,8 +67,8 @@ public class CRUD<T extends registro> {
          * ! configurações pré gravação
          */
 
-        countID++;
-        foobar.setID(countID);
+        countReg++;
+        foobar.setID(id);
         byte[] ba = foobar.toByteArray();
         int tam = ba.length;
         boolean flag = true;
@@ -71,6 +76,8 @@ public class CRUD<T extends registro> {
 
         try {
             arq = new RandomAccessFile("dados/livros.db", "rw");
+            arq.seek(0);
+            arq.writeInt(countReg);
             arq.seek(arq.length()); // ir para o EOF
             arq.writeBoolean(flag); // Escreve a Flag
             arq.writeInt(tam); // Escreve o tamanho do objeto
@@ -97,8 +104,12 @@ public class CRUD<T extends registro> {
      * @return retorna o objeto com o ID 
      * @throws SecurityException
      * @throws IOException
+     * @throws InvocationTargetException
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
      */
-    public T read(int id) throws SecurityException, IOException {
+    public T read(int id) throws Exception {
         Log my_log = new Log("dados/log.txt"); // Criar o Log e definir o local do arquivo
         my_log.logger.setLevel(Level.WARNING); // Só registra warning pra cima
         // -----------------------fim log-------------------------------
@@ -109,49 +120,58 @@ public class CRUD<T extends registro> {
 
         int key = 0;
         int tam = 0;
+        T foobar = (T) foo.newInstance();
+        T foobarfoo = (T) foo.newInstance();
+        boolean sideFlag = false;
         boolean flag = false;
-        byte[] ba;
+        byte[] ba = new byte[0];
         // -----------------------fim log-------------------------------
 
         try {
             arq = new RandomAccessFile("dados/livros.db", "rw");
-
-            // * Lê enquanto não achar o ID
-            do {
+            arq.seek(0);
+            arq.readInt();
+            for (int i = 0; i < countReg; i++) {                
                 flag = arq.readBoolean();
                 tam = arq.readInt();
                 ba = new byte[tam];
                 arq.read(ba);
-                bar.fromByteArray(ba);
-                key = bar.getID();
-            } while (key != id);
-            if (!flag) {
-                do {
-                    flag = arq.readBoolean();
-                    tam = arq.readInt();
-                    ba = new byte[tam];
-                    arq.read(ba);
-                    bar.fromByteArray(ba);
-                    key = bar.getID();
-                } while (key != id);
+                foobar.fromByteArray(ba);
+                key = foobar.getID();
+                if (key == id && flag == true) {
+                    sideFlag = true;
+                   foobarfoo = foobar; 
+                   i = countReg;
+                }
             }
+
             arq.close();
+
         } catch (FileNotFoundException FNFE) {
             FNFE.printStackTrace();
             my_log.logger.severe("Arquivo não encontrado");
-
+            
         } catch (FileAlreadyExistsException FAEE) {
             FAEE.printStackTrace();
             my_log.logger.severe("Arquivo já existe");
         } catch (Exception e) {
             my_log.logger.warning(e.toString());
         }
-
-        return bar;
+        if (!sideFlag) {
+            foobarfoo = null;
+        }
+        return foobarfoo;
     }
     // -----------------------fim READ-------------------------------
 
     public void update(T foobar) throws SecurityException, IOException {
+
+        delete(foobar.getID());
+        create(foobar, foobar.getID());
+
+    }
+
+    public void delete(int id) throws SecurityException, IOException {
         Log my_log = new Log("dados/log.txt"); // Criar o Log e definir o local do arquivo
         my_log.logger.setLevel(Level.WARNING); // Só registra warning pra cima
         // -----------------------fim log-------------------------------
@@ -162,17 +182,18 @@ public class CRUD<T extends registro> {
 
         int key = 0;
         int tam = 0;
-        int id = foobar.getID();
-        long FileAt;
+        long FileAt = 0;
         boolean flag = false;
-        byte[] ba;
+        byte[] ba = new byte [0];
         // -----------------------fim log-------------------------------
-
+        // System.out.println(foobar);
         try {
             arq = new RandomAccessFile("dados/livros.db", "rw");
+            arq.seek(0);
+            arq.readInt();
 
             // * Lê enquanto não achar o ID
-            do {
+            for (int i = 0; i < countReg; i++) {                
                 FileAt = arq.getFilePointer();
                 flag = arq.readBoolean();
                 tam = arq.readInt();
@@ -180,14 +201,13 @@ public class CRUD<T extends registro> {
                 arq.read(ba);
                 bar.fromByteArray(ba);
                 key = bar.getID();
-            } while (key == id);
-
+                if (flag == true && key == id) {
+                    i = countReg;
+                }
+            }
+            ba = bar.toByteArray();
             arq.seek(FileAt);
             arq.writeBoolean(false);
-            arq.seek(arq.length()); // ir para o EOF
-            arq.writeBoolean(flag); // Escreve a Flag
-            arq.writeInt(tam); // Escreve o tamanho do objeto
-            arq.write(ba); //escreve o objeto em si
 
             arq.close();
         } catch (FileNotFoundException FNFE) {
@@ -200,9 +220,5 @@ public class CRUD<T extends registro> {
         } catch (Exception e) {
             my_log.logger.warning(e.toString());
         }
-    }
-
-    public void delete(int id3) {
-        //
     }
 }
