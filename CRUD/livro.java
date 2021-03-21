@@ -7,9 +7,9 @@ import java.text.DecimalFormat;
 /**
  * Declaração e começo da classe CRUD Genérica
  * Basicamente as mesmas coisas que a aula do kutova
- * 
+ *
  * @author Iyan Lucas Duarte Marques;
- * @version 1.0
+ * @version 1.1
  */
 class Livro implements registro {
     private int IDlivro;

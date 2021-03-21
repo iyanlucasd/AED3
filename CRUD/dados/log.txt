@@ -66,3 +66,7 @@ Mar 02, 2021 2:47:15 PM CRUD read
 WARNING: java.io.EOFException
 Mar 02, 2021 2:53:27 PM CRUD read
 WARNING: java.lang.NullPointerException: Cannot store to object array because "this.barfoo" is null
+Mar 21, 2021 10:05:06 AM CRUD delete
+WARNING: java.io.EOFException
+Mar 21, 2021 10:05:06 AM CRUD read
+WARNING: java.io.EOFException

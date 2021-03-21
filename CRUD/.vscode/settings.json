@@ -47,5 +47,6 @@
             "italic": false
         }
     ],
-    "java.format.settings.url": "eclipse-formatter.xml"
+    "java.format.settings.url": "eclipse-formatter.xml",
+    "deepscan.enable": true
 }
