@@ -3,11 +3,11 @@ import java.io.*;
 public class Teste {
 
     // Arquivo declarado fora de main() para ser poder ser usado por outros métodos
-    private static CRUD arqLivros;
+    static CRUD arqLivros;
 
     public static void main(String[] args) {
 
-        // Livros de exemplo
+            // Livros de exemplo
         Livro l1 = new Livro(-1, "Eu, Robô", "Isaac Asimov", 14.9F);
         Livro l2 = new Livro(-1, "Eu Sou A Lenda", "Richard Matheson", 21.99F);
         Livro l3 = new Livro(-1, "Número Zero", "Umberto Eco", 34.11F);
@@ -37,7 +37,7 @@ public class Teste {
             System.out.println("-----------------------------------");
             System.out.println(arqLivros.read(id1));
             System.out.println("-----------------------------------");
-            
+
             // Altera um livro para um tamanho maior e exibe o resultado
             l2.autor = "Richard Burton Matheson";
             arqLivros.update(l2);
