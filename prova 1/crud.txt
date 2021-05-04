@@ -1,0 +1,83 @@
+algoritmo create(chave, endereço)
+    se registro menor que 256
+        então
+            carregar bloco
+            mover o ponteiro para início do arquivo
+            ler inteiro
+            guardar inteiro -> ultimoID
+
+            se inteiro maior ou igual a 63
+                então
+                    dividir bloco original
+                    selecionar bloco 1
+            senão
+                então
+                    continue
+            fim-se
+
+            registroID <- últimoID + 1
+            mover o ponteiro para o fim do arquivo
+            criar registro para o objeto
+            escreva registroID
+            escrever registro
+            ordenar registro
+            guardar posição ponteiro -> pos
+            mover o ponteiro para início do arquivo
+            atualizar numero de registros
+            inserir o par (registroID, pos) no índice
+
+    senão
+        então
+            diga "registro estourado"
+    fim-se
+fim-algoritmo
+
+algoritmo read(ID)
+    ler inteiro -> nRegistros
+    se ID menor que nRegistros
+        então
+            faça
+                next() -> id-Registro
+                incrementar contador
+                se ID igual a idRegistro
+                    então
+                    pare laço
+                senão
+                    então
+                    pos = -1
+                fim-se
+            enquanto ID diferente de idRegistro && enquanto menor que nRegistros
+        se pos != -1
+            então mover o ponteiro para pos
+                ler registro
+                se registro.lapide != 'false'
+                    então extrair objeto do registro
+                        retornar objeto e terminar
+                fim-se
+        fim-se
+    senão
+        então
+            retorne -1
+    fim-se
+fim-algoritmo
+
+algoritmo update(chave, novoEndereço)
+    ler inteiro -> nRegistros
+    faça
+        next() -> id-Registro
+        incrementar contador
+    enquanto ID diferente de idRegistro && enquanto menor que nRegistros
+    sobrescrever antigoEndereço com novoEndereço
+fim-algoritmo
+
+algoritmo delete(chave)
+    ler inteiro -> nRegistros
+    faça
+        next() -> id-Registro
+        incrementar contador
+    enquanto ID diferente de idRegistro && enquanto menor que nRegistros
+    modificar lápide da chave -> 'false'
+    mover ponteiro para IOF
+    modificar nRegistros para nRegistros - 1
+
+fim-algoritmo

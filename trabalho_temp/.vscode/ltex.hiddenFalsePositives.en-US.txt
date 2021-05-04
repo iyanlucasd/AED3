@@ -1,0 +1,1 @@
+{"rule":"PUNCTUATION_PARAGRAPH_END","sentence":"^\\QBoa noite!, primeiramente deixe eu explicar a situação que ocooreu\\E$"}
