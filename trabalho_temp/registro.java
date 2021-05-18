@@ -10,4 +10,6 @@ public interface registro {
     public byte[] toByteArray() throws IOException;
 
     public void fromByteArray(byte[] ba) throws IOException;
+
+    
 }
