@@ -19,7 +19,7 @@ public class Main {
 
   // Método principal apenas para testes
   public static void main(String[] args) {
-    UI interfaceUsuario = new UI();
-    interfaceUsuario.MENU();
+    MENU interfaceUsuario = new MENU();
+    interfaceUsuario.menu();
   }
 }
