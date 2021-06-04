@@ -1,0 +1,33 @@
+\documentclass[12pt]{article}                                                                                                                       
+\usepackage{sbc-template}                                                 
+\usepackage{graphicx,url}                                                 
+\usepackage[utf8]{inputenc}                                               
+\usepackage[brazil]{babel}                                                      
+
+\title{Análise:\\ \textit{"A Practical Scalable Distributed B-Tree"}}
+\author{Iyan Lucas Duarte Marques\inst{1}}
+
+\address{Instituto de Ciências Exatas e Informática — Pontifícia Universidade Católica Minas Gerais (PUC-MG)}
+
+\begin{document}
+\maketitle
+\section{Introdução}
+O artigo escrito por Aguilera, Golab e Shah apresenta uma árvore B+ distribuída cuja proposta é escalabilidade, alta taxa de transferência e grande armazenamento.
+A estrutura é focada em servidores para alta eficiência, onde vários \textit{nodes} são localizados em múltiplos servidores.
+A utilização da mesma varia de, igual dito no artigo, banco de dados e aplicações \textit{online} à (jogos) \textit{multiplayer online}.
+
+\section{\textit{B+ Tree vs B+ Distributed Tree}}
+Apesar das aplicações \textit{online} e a questão da distribuição de \textit{nodes} entre vários servidores, o que me impressionou foi a diferença entre os métodos natívos da estrutura.
+Mais especificamente os métodos: \textit{getRoot()} e \textit{Alloc() Free()\footnote{Seção 6, (DETAILS OF DISTRIBUTED B-TREE ALGORITHIM), subseção 6.1 (Dictionary and enumeration operations), respectivamente: \textit{Finding the root} e \textit{Node allocation and deallocation}}}
+Como Aguilera diz nessa parte, a árvore pode sofrer modificações ao longo da sua utilização, como quebra de folhas, mudança de altura, entre outros. 
+Por isso, diferentemente da árvore tradicional, a árvore distribuída guarda um objeto especial contendo a meta data da raiz e uma lista de todos os servidores que essa estrutura se encontra, garantindo uma grande eficiência.
+\par Em relação à alocação de nodos da estrutura, visto que a mesma se encontra em vários servidores e recebendo operações em tempo real, há a necessidade de evitar múltiplas alocações ao mesmo tempo\footnote{
+    Quando a mesma operação de alocação é chamada mais de uma vez, gerando assim um conflito ou mais de uma alocação do mesmo objeto, gerando uma redundância prejudicial.
+} e \textit{memory leaks\footnote{Quando a operação de alocação é abortada em tempo de execução.}}.
+Desta forma, em cada servidor tem um número de nodos inutilizados e um vetor indicando qual nodo está disponível.
+O qual cada cliente tem uma duplicata para garantir mais eficiência.
+Logo, o cliente seleciona o servidor através de uma função que retorna o mais ideal e seleciona um nodo que está livre. 
+A desalocação é similar à alocação, somente a parte de seleção do nodo que ocorre inversamente.
+Isto se difere da árvore tradicional que não possui esse vetor e essa \textit{pool} de nodos, se tornando assim mais vulnerável à falha e consequentemente mais suscetível a erros.
+
+\end{document}

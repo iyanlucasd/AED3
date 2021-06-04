@@ -1,4 +1,10 @@
 {
     "cSpell.enabled": false,
-    "C_Cpp.errorSquiggles": "Enabled"
+    "C_Cpp.errorSquiggles": "Enabled",
+    "java.project.sourcePaths": [
+        "trabalho_temp/tabela.hash.extensivel",
+        "trabalho",
+        "CRUD",
+        "trabalho_temp"
+    ]
 }

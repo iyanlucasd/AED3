@@ -55,6 +55,14 @@ public class Usuario implements aed3.RegistroHashExtensivel<Usuario> {
     return this.email.hashCode();
   }
 
+  public int getID(){
+    return id;
+  }
+
+  public void setID(int id){
+    this.id = id;
+  }
+
   public short size() {
     return this.TAMANHO;
   }

@@ -24,8 +24,7 @@ public class CRUD<T extends registro> {
     protected T bar; // variável de tipo genérico
     protected String file_path; // String pra caminho personalizado
     protected Constructor foo; // Constructor para inicializar T fora do "construtor"
-    protected Map<Integer, Long> positionArray = new HashMap<Integer, Long>(); // Array de index (posição de ponteiro de
-                                                                               // arquivo)
+    protected Long ponteiro;
 
     RandomAccessFile arq; // RAF para acessar em todos os métodos
     RandomAccessFile index; // RAF para acessar o Index
@@ -223,7 +222,7 @@ public class CRUD<T extends registro> {
         }
         positionArray.put(id, pos);
         createIndex(id);
-        return countID;
+        return id;
 
     }
     // -----------------------fim create-------------------------------
