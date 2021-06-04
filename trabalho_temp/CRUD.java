@@ -7,12 +7,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.Objects;
 
+
 import aed3.HashExtensivel;
 
-public class CRUD<T extends registro> {
+class CRUD<T extends registro> {
     protected int countID = 0; // contador de IDs
     protected int countReg = 0; // contador de registos
-    protected T bar; // variável de tipo genérico
     protected String file_path; // String pra caminho personalizado
     protected Constructor foo; // Constructor para inicializar T fora do "construtor"
     protected Long ponteiro;
@@ -28,10 +28,13 @@ public class CRUD<T extends registro> {
      * @param foo       Construtor genérico de objeto passado pela main (6)
      * @param file_name String com o caminho
      */
+    CRUD(){
+
+    }
     CRUD(Constructor foo, String file_name) {
         try {
             this.foo = foo; // Alocando o construtor
-            this.bar = (T) foo.newInstance(); // alocando o tipo pra classe genérica e criando objeto
+
             this.file_path = "dados/" + file_name + ".db"; // set file_path
             he = new HashExtensivel<>(ponteiroHash.class.getConstructor(), 4, "dados/" + file_name + ".hash_d.db",
                     "dados/" + file_name + ".hash_c.db");
@@ -42,6 +45,7 @@ public class CRUD<T extends registro> {
         }
 
     }
+
     /**
      * 
      * @param foobar
@@ -56,6 +60,7 @@ public class CRUD<T extends registro> {
 
     /**
      * Create genérico
+     * 
      * @return id
      * @throws SecurityException --> LOG
      * @throws IOException       --> LOG && RAF
@@ -211,3 +216,4 @@ public class CRUD<T extends registro> {
         }
     }
 }
+

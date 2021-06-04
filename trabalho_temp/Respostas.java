@@ -7,47 +7,57 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Pergunta implements registro_pergunta {
+public class Respostas implements registro_pergunta {
+    private int idResposta;
     private int idPerguntas;
     private int idUsuario;
-    protected String Usuario;
+    protected String usuario;
     private Long criacao;
     private Short nota;
-    protected String pergunta;
-    private String palavraChave;
+    protected String resposta;
+
     private boolean ativa;
     Date tempo = new Date();
 
-    public Pergunta() {
+    public Respostas() {
+        this.idResposta = -1;
         this.idPerguntas = -1;
         this.idUsuario = -1;
+
         this.criacao = tempo.getTime();
         this.nota = 0;
-        this.pergunta = "";
-        this.palavraChave = "";
+        this.resposta = "";
         this.ativa = true;
     }
 
-    public Pergunta(int id, String pergunta, String Usuario) {
-        this.idPerguntas = -1;
-        this.idUsuario = id;
-        this.Usuario = Usuario;
+    public Respostas(int idPergunta, int idUsuario, String resposta, String usuario) {
+        this.idResposta = -1;
+        this.idPerguntas = idPergunta;
+        this.idUsuario = idUsuario;
+        this.usuario = usuario;
         this.criacao = tempo.getTime();
         this.nota = 0;
-        this.pergunta = pergunta;
-        this.palavraChave = "";
+        this.resposta = resposta;
         this.ativa = true;
     }
 
-    public Pergunta(int id, String pergunta, String Usuario, String palavra) {
-        this.idPerguntas = -1;
-        this.idUsuario = id;
-        this.Usuario = Usuario;
+    public Respostas(int id, int idPergunta, int idUsuario, String resposta, String usuario) {
+        this.idResposta = id;
+        this.idPerguntas = idPergunta;
+        this.idUsuario = idUsuario;
+        this.usuario = usuario;
         this.criacao = tempo.getTime();
         this.nota = 0;
-        this.pergunta = pergunta;
-        this.palavraChave = palavra;
+        this.resposta = resposta;
         this.ativa = true;
+    }
+
+    public int getIdResposta() {
+        return idResposta;
+    }
+
+    public void setIdResposta(int idResposta) {
+        this.idResposta = idResposta;
     }
 
     @Override
@@ -84,32 +94,18 @@ public class Pergunta implements registro_pergunta {
         this.ativa = ativa;
     }
 
-    public String getPalavraChave() {
-        return palavraChave;
-    }
-
-    public void setPalavraChave(String palavraChave) {
-        this.palavraChave = palavraChave;
-    }
-
     @Override
     public String toString() {
         String string;
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
         if (ativa) {
-            string = "\nCriada em " + dateFormat.format(this.criacao) + " por " + this.Usuario
-                    + "\n+--------------------------------------------------------------------------------+\n"
-                    + this.pergunta
-                    + "\n+--------------------------------------------------------------------------------+\n"
-                    + "Palavras Chaves: " + this.palavraChave + "\n" + "Nota: " + this.nota;
+            string = this.resposta + "\nRespondido em " + dateFormat.format(this.criacao) + " por: " + this.usuario
+                    + "\nNota: " + nota;
 
         } else {
-            string = "(Arquivada)\n" + "\nCriada em " + dateFormat.format(this.criacao) + " por " + this.Usuario
-                    + "\n+--------------------------------------------------------------------------------+\n"
-                    + this.pergunta
-                    + "\n+--------------------------------------------------------------------------------+\n" + "\n"
-                    + "Palavras Chaves: " + this.palavraChave + "\n" + "Nota: " + this.nota;
+            string = "(Arquivada)\n" + this.resposta + "\nRespondido em " + dateFormat.format(this.criacao) + " por: "
+                    + this.usuario + "\nNota: " + nota;
         }
 
         return string + "\n";
@@ -123,13 +119,13 @@ public class Pergunta implements registro_pergunta {
     public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream BAOS = new ByteArrayOutputStream();
         DataOutputStream DAOS = new DataOutputStream(BAOS);
+        DAOS.writeInt(this.idResposta);
         DAOS.writeInt(this.idPerguntas);
         DAOS.writeInt(this.idUsuario);
-        DAOS.writeUTF(this.Usuario);
+        DAOS.writeUTF(this.usuario);
         DAOS.writeLong(this.criacao);
         DAOS.writeShort(this.nota);
-        DAOS.writeUTF(this.pergunta);
-        DAOS.writeUTF(this.palavraChave);
+        DAOS.writeUTF(this.resposta);
         DAOS.writeBoolean(this.ativa);
         return BAOS.toByteArray();
     }
@@ -137,13 +133,13 @@ public class Pergunta implements registro_pergunta {
     public void fromByteArray(byte[] ba) throws IOException {
         ByteArrayInputStream BAIS = new ByteArrayInputStream(ba);
         DataInputStream DAIS = new DataInputStream(BAIS);
+        this.idResposta = DAIS.readInt();
         this.idPerguntas = DAIS.readInt();
         this.idUsuario = DAIS.readInt();
-        this.Usuario = DAIS.readUTF();
+        this.usuario = DAIS.readUTF();
         this.criacao = DAIS.readLong();
         this.nota = DAIS.readShort();
-        this.pergunta = DAIS.readUTF();
-        this.palavraChave = DAIS.readUTF();
+        this.resposta = DAIS.readUTF();
         this.ativa = DAIS.readBoolean();
 
     }
