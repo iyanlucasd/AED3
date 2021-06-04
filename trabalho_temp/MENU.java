@@ -331,6 +331,10 @@ public class MENU {
 
     }
 
+    /**
+     * 
+     * @param jorjao
+    */
     public void menuRespostas(Pergunta jorjao) {
         int subOpcao = 0;
         do {
@@ -397,7 +401,10 @@ public class MENU {
         }
 
     }
-
+     /**
+      * 
+      * @param idPergunta
+      */
     public void listarResposta(int idPergunta) {
         try {
             Respostas[] array;
@@ -411,7 +418,11 @@ public class MENU {
         }
 
     }
-
+    /**
+     * 
+     * @param idPergunta
+     * @param idUsuario
+     */
     public void listarResposta(int idPergunta, int idUsuario) {
         try {
             Respostas[] array;
@@ -473,7 +484,12 @@ public class MENU {
             System.out.println("PROBLEMA NO INCLUIR");
         }
     }
-
+    /**
+     * 
+     * @param idPergunta
+     * @param idUsuario
+     * @param usuario
+     */
     public void incluirResposta(int idPergunta, int idUsuario, String usuario) {
 
         try {
@@ -553,7 +569,11 @@ public class MENU {
             System.out.println("PROBLEMA NO LISTAR");
         }
     }
-
+    /**
+     * 
+     * @param idPergunta
+     * @param idUsuario
+     */
     public void alterarResposta(int idPergunta, int idUsuario) {
         try {
             System.out.println("UPDATE");
@@ -634,7 +654,11 @@ public class MENU {
             System.out.println("PROBLEMA NO LISTAR");
         }
     }
-
+    /**
+     * 
+     * @param idPergunta
+     * @param idUsuario
+     */
     public void arquivarResposta(int idPergunta, int idUsuario) {
         try {
             System.out.println("\nEXCLUSÃO");

@@ -15,6 +15,11 @@
   - [Implementados](##Implementado3ª)
   - [Arquivos](##Arquivos3ª)
   - [Métodos](##Métodos3ª)
+- [Parte 4](##4ªEtapa)
+  - [Comentários](##Comentários4ª)
+  - [Implementados](##Implementado4ª)
+  - [Arquivos](##Arquivos4ª)
+  - [Métodos](##Métodos4ª)
 - [Autores](#Autores)
 <!--te-->
 
@@ -213,6 +218,16 @@
 
 ## Métodos3ª
 
+
+> ### Menu
+
+```java
+    /**
+     * busca por palavra chave
+     */
+    public void busca_chave()
+
+```
 > ### CRUD e CRUD_pergunta
 
 ```java
@@ -231,14 +246,89 @@
     public void DELETE_palavra(Pergunta foobar)
 ```
 
+
+---
+## 4ªEtapa
+
+## Comentários4ª
+
+- [x] **Vocês continuam com várias implementações do CRUD. Vocês chegaram a ver o código que deixei como exemplo, usando herança? Apesar das suas classes CRUD de filhos estenderem a classe principal, vocês estão implementando tudo novamente.** *(Professor, não conseguimos fazer essa correção porque teriamos que refazer todo os CRUD, visto o volume de trabalho enorme, seja no estágio quanto na faculdade, não tivemos tempo para realizar)*
+
+- [x] **O controle de novos IDs de usuários e de perguntas também está errado. Vocês não podem nem usar um número arbitrário nem pegar a posição do arquivo. O certo é criar um contador no cabeçalho do arquivo.** *(Idem comentário 1)*
+
+- [x] ~~Quando uma pergunta é arquivada, a lista (nas operações de alteração ou exclusão) deve ser sequencial contínua, isto é, sem pular números.~~ **Feito!** 
+
+
+## Implementado4ª
+
+    Tudo da Resposta foi implementado, todas as opções da tela de Respostas requeridas pela etapa 4
+
+## Arquivos4ª
+```diff
+> `\aed3` --> Arquivos disponibilizados pelo Professor
+  > `\aed3\ArvoreBMais_ChaveComposta_Int_Int.java` --> Arquivo da árvore B+
+  > `\aed3\HashExtensivel.java` --> Arquivo do Hash
+  > `\aed3\RegistroHashExtensivel.java` --> Arquivo do registro do Hash
+  > `\aed3\ListaInvertida.java` --> Arquivo da lista invertida
+> `\dados` --> Arquivos .db que guardam os dados que a gente gera no programa
+> `CRUD.java` --> classe CRUD genérico
++ `CRUD_filhos.java` --> subclasse do CRUD genérico (contém as subclasses CRUD_Usuários && CRUD_perguntas que extendem CRUD)
+> `Main.java` --> Arquivo para executar no _Repl.it_ (basicamente só chama o arquivo `MENU.java`)
+> `MENU.java` --> Arquivo responsável pelo menu apresentado ao usuário e para as chamadas do crud **Modificado** adaptado os metodos para palavras chave
+> `Pergunta.java` --> Declaração da classe Pergunta **Modificado** adicionado palavras chaves e nome de usuario 
++ `Respostas.java` --> Declaração da classe Pergunta **Modificado** adicionado palavras chaves e nome de usuario 
+> `ponteiroArvore.java` --> Declaração da classe ponteiroArvore utilizada na Árvore B+ genérica
+> `ponteiroArvore.java` --> Declaração da classe ponteiroHash utilizada no Hash Extensível genérico
+> `README.md` --> Registro escrito
+> `registro_pergunta.java` --> Interface da classe Pergunta
+> `registro.java` --> Interface da classe Usuário
+> `Usuario.java` --> Declaração da classe Usuário
+```
+
+## Métodos4ª
 > ### Menu
 
 ```java
     /**
-     * busca por palavra chave
-     */
-    public void busca_chave()
+     * 
+     * @param jorjao
+    */
+    public void menuRespostas(Pergunta jorjao)
 
+      /**
+      * 
+      * @param idPergunta
+      */
+    public void listarResposta(int idPergunta)
+
+    /**
+     * 
+     * @param idPergunta
+     * @param idUsuario
+     */
+    public void listarResposta(int idPergunta, int idUsuario)
+
+    /**
+     * 
+     * @param idPergunta
+     * @param idUsuario
+     * @param usuario
+     */
+    public void incluirResposta(int idPergunta, int idUsuario, String usuario)
+
+    /**
+     * 
+     * @param idPergunta
+     * @param idUsuario
+     */
+    public void alterarResposta(int idPergunta, int idUsuario)
+
+    /**
+     * 
+     * @param idPergunta
+     * @param idUsuario
+     */
+    public void arquivarResposta(int idPergunta, int idUsuario)
 ```
 
 ---
